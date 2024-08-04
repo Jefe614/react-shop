@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Expenses{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Expenses</h1>
+    <form method="get" class="form-inline justify-content-center mb-4">
+        <div class="form-group mb-2">
+            <label for="shop" class="mr-2">Filter by shop:</label>
+            <select name="shop" id="shop" class="form-control">
+                <option value="">All Shops</option>
+                {% for shop in shops %}
+                    <option value="{{ shop.id }}" {% if request.GET.shop == shop.id|stringformat:"s" %}selected{% endif %}>
+                        {{ shop.get_name_display }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary mb-2 ml-2">Filter</button>
+    </form>
+
+    <table class="table table-hover table-responsive-md">
+        <thead class="thead-dark">
+            <tr>
+                <th>Shop</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense.shop }}</td>
+                    <td>{{ expense.date }}</td>
+                    <td>{{ expense.amount }}</td>
+                    <td>{{ expense.description }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .form-inline .form-group label {
+        font-weight: bold;
+    }
+    .table {
+        background-color: #ffffff;
+    }
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+    .card-header {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+    .card-body p {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
