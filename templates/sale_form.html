@@ -3,10 +3,69 @@
 {% block title %}Add New Sale{% endblock %}
 
 {% block content %}
-<h1>Add New Sale</h1>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-success">Save</button>
-</form>
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Add New Sale</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-primary shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Sale Details</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ form.as_p }}
+                        </div>
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success">Save</button>
+                            <a href="{% url 'sale-create' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
+
+<style>
+/* Ensure the card is responsive and centered */
+.card {
+    border-radius: 0.5rem;
+}
+
+/* Card header styling */
+.card-header {
+    border-bottom: 2px solid #007bff;
+}
+
+/* Button styles */
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+/* Secondary button style */
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+/* Responsive form adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+}
+</style>
