@@ -71,12 +71,6 @@
                     <a class="nav-link {% if request.path == '/sales/new/' %}active{% endif %}" href="{% url 'sale-create' %}">Add Sale</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/expenses/' %}active{% endif %}" href="{% url 'expense-list' %}">Expenses</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/expenses/new/' %}active{% endif %}" href="{% url 'expense-create' %}">Add Expense</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link {% if request.path == '/performance/' %}active{% endif %}" href="{% url 'shop-performance' %}">Performance</a>
                 </li>
                 {% if user.is_authenticated %}

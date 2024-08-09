@@ -7,30 +7,26 @@
 
 <!-- Table container for responsiveness -->
 <div class="table-responsive">
-    <table class="table table-striped card border-primary">
+    <table class="table table-striped bg-white table-bordered table-sm">
         <thead>
             <tr>
                 <th>Shop</th>
-                <th>Total Sales</th>
-                <th>Total Expenses</th>
-                <th>Profit/Loss</th>
-                <th>Status</th>
+                <th>Total Cash In</th>
+                <th>Total Till In</th>
+                <th>Total Cash Out</th>
+                <th>Total Till Out</th>
+                <th>Total Cash</th>
             </tr>
         </thead>
         <tbody>
             {% for data in shop_data %}
                 <tr>
                     <td>{{ data.shop }}</td>
-                    <td>KSH {{ data.total_sales }}</td>
-                    <td>KSH {{ data.total_expenses }}</td>
-                    <td>KSH {{ data.profit_loss }}</td>
-                    <td>
-                        {% if data.below_target %}
-                            <span class="text-danger">Below Target</span>
-                        {% else %}
-                            <span class="text-success">On Target</span>
-                        {% endif %}
-                    </td>
+                    <td class="text-right text-success">KSH {{ data.total_cash_in|floatformat:2 }}</td>
+                    <td class="text-right text-success">KSH {{ data.total_till_in|floatformat:2 }}</td>
+                    <td class="text-right text-danger">KSH {{ data.total_cash_out|floatformat:2 }}</td>
+                    <td class="text-right text-danger">KSH {{ data.total_till_out|floatformat:2 }}</td>
+                    <td class="text-right {% if data.total_cash < 0 %}text-danger{% else %}text-success{% endif %}">KSH {{ data.total_cash|floatformat:2 }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -47,9 +43,9 @@
                         <h5 class="mb-0">{{ data.shop }}</h5>
                     </div>
                     <div class="card-body">
-                        <p class="card-text"><strong>Average Sales per Day:</strong> KSH {{ data.average_sales_per_day|floatformat:0 }}</p>
-                        <p class="card-text"><strong>Expense Ratio:</strong> {{ data.expense_ratio|floatformat:0 }}%</p>
-                        <p class="card-text"><strong>Profit Margin:</strong> {{ data.profit_margin|floatformat:0 }}%</p>
+                        <p class="card-text"><strong>Average Sales per Day:</strong> KSH {{ data.average_sales_per_day|floatformat:2 }}</p>
+                        <p class="card-text"><strong>Sales to Target Ratio:</strong> {{ data.sales_to_target_ratio }}%</p>
+                        <p class="card-text"><strong>Profit Margin:</strong> {{ data.profit_margin }}%</p>
                     </div>
                 </div>
             </div>
@@ -60,40 +56,35 @@
 <!-- Performance Trends -->
 <div class="mt-4">
     <h2>Performance Trends</h2>
-    <div class="chart-container">
-        <canvas id="performanceTrends" width="600" height="300"></canvas>
+    <div class="chart-container" style="width: 100%; max-width: 500px; margin: 0 auto;">
+        <canvas id="performanceTrends" width="500" height="250"></canvas>
     </div>
 </div>
 
 <!-- Include Chart.js library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const chartData = JSON.parse('{{ chart_data|escapejs }}');
-
-    new Chart(document.getElementById('performanceTrends'), {
+    var ctx = document.getElementById('performanceTrends').getContext('2d');
+    var chartData = {{ chart_data|safe }};
+    var myChart = new Chart(ctx, {
         type: 'line',
-        data: {
-            labels: chartData.labels,
-            datasets: chartData.datasets
-        },
+        data: chartData,
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'top'
+                    position: 'top',
                 },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            let label = context.dataset.label || '';
+                            var label = context.dataset.label || '';
                             if (label) {
                                 label += ': ';
                             }
                             if (context.parsed.y !== null) {
-                                label += 'KSH ' + context.parsed.y;
+                                label += 'KSH ' + context.parsed.y.toFixed(2);
                             }
                             return label;
                         }
@@ -102,14 +93,12 @@ document.addEventListener("DOMContentLoaded", function() {
             },
             scales: {
                 x: {
-                    beginAtZero: true,
                     title: {
                         display: true,
                         text: 'Month'
                     }
                 },
                 y: {
-                    beginAtZero: true,
                     title: {
                         display: true,
                         text: 'Sales (KSH)'
@@ -118,37 +107,18 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     });
-});
 </script>
 
-<style>
-/* Ensure the chart is responsive */
-.chart-container {
-    position: relative;
-    height: 300px;
-    width: 100%;
-}
-
-/* Style for KPIs */
-.card-title {
-    font-size: 1.25rem;
-}
-
-.card-text {
-    font-size: 1rem;
-}
-
-/* Responsive adjustments for table */
-.table th, .table td {
-    font-size: 0.875rem; /* Reduce font size for smaller screens */
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .card-body {
-        padding: 1rem;
-    }
-}
-</style>
+<!-- Alerts Section -->
+{% if alerts %}
+    <div class="alert alert-warning mt-4">
+        <h4 class="alert-heading">Alerts</h4>
+        <ul>
+            {% for alert in alerts %}
+                <li>{{ alert }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
 
 {% endblock %}

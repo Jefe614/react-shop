@@ -18,10 +18,6 @@ class Shop(models.Model):
     def total_sales(self):
         return self.sale_set.aggregate(total=models.Sum('amount'))['total'] or 0
 
-    @property
-    def total_expenses(self):
-        return self.expense_set.aggregate(total=models.Sum('amount'))['total'] or 0
-
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     shop = models.ForeignKey(Shop, on_delete=models.SET_NULL, null=True, blank=True)
@@ -31,19 +27,13 @@ class UserProfile(models.Model):
 
 class Sale(models.Model):
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
-    date = models.DateField(auto_now_add=True)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='sales_images/', blank=True, null=True)
+    date = models.DateField()
+    cash_in = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    cash_out = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    till_in = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    till_out = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    closing_balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    image = models.ImageField(upload_to='sales_images/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.shop.get_name_display()} - {self.date}"
-
-class Expense(models.Model):
-    shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
-    date = models.DateField(auto_now_add=True)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    description = models.TextField(blank=True)
-
-    def __str__(self):
-        return f"{self.shop.get_name_display()} - {self.date}"
+        return f"{self.shop} - {self.date} - KSH {self.closing_balance}"
