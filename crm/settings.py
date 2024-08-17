@@ -74,6 +74,7 @@ DATABASES = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://react-shop-0h3k.onrender.com",
+    "https://frontend-shop-henna.vercel.app"
 ]
 
 AUTH_PASSWORD_VALIDATORS = [
