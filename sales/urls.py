@@ -1,21 +1,24 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from .views import (
-    SaleListView, SaleCreateView, SaleDetailView, 
-    SaleUpdateView, SaleDeleteView,signup_view
+    ShopViewSet,
+    UserProfileViewSet,
+    SaleViewSet,
+    RegisterView,
+    SaleListView,
+    performance_summary_api
 )
-from .views import performance
-from django.contrib.auth import views as auth_views
+
+router = DefaultRouter()
+router.register(r'shops', ShopViewSet, basename='shop')
+router.register(r'userprofiles', UserProfileViewSet, basename='userprofile')
+router.register(r'sales', SaleViewSet, basename='sale')
 
 urlpatterns = [
-        path('', SaleListView.as_view(), name='sale-list'),
-    path('sales/new/', SaleCreateView.as_view(), name='sale-create'),
-    path('sales/<int:pk>/', SaleDetailView.as_view(), name='sale-detail'),
-    path('sales/<int:pk>/edit/', SaleUpdateView.as_view(), name='sale-update'),
-    path('sales/<int:pk>/delete/', SaleDeleteView.as_view(), name='sale-delete'),
-    path('performance/', performance, name='shop-performance'),
-    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
-    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('signup/', signup_view, name='signup'),
+    path('', include(router.urls)),
+    path('signup/', RegisterView.as_view(), name='signup'),
+    path('sales-list/', SaleListView.as_view(), name='sale-list'),
+    path('api/performance/', performance_summary_api, name='performance-summary-api'),
 
 
 ]
