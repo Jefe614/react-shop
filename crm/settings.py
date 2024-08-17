@@ -1,16 +1,17 @@
 from pathlib import Path
 import os
 from datetime import timedelta
+from urllib.parse import urlparse
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-f-2lqznx1ppg%a*k(-u9sg7k^svsd7wdsvk8c57_qrd9xnkr-d'
 DEBUG = True
 ALLOWED_HOSTS = [
-    'https://react-shop-0h3k.onrender.com',
     'react-shop-0h3k.onrender.com',
     '127.0.0.1',
-    'localhost']
+    'localhost',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -55,16 +56,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'crm.wsgi.application'
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Your React app's origin
-]
+# Parse the database URL
+db_url = 'postgresql://jefe_sample_user:gTcTWcGdwsugdmA9y66mlNTyFLndiYxm@dpg-cqf6seo8fa8c73elkkvg-a.oregon-postgres.render.com/jefe_sample'
+url = urlparse(db_url)
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': url.path[1:],  # Remove leading '/'
+        'USER': url.username,
+        'PASSWORD': url.password,
+        'HOST': url.hostname,
+        'PORT': url.port,
     }
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "https://react-shop-0h3k.onrender.com",
+]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -86,13 +96,13 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -113,4 +123,3 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
     'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
 }
-
