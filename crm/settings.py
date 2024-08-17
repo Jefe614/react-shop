@@ -6,7 +6,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-f-2lqznx1ppg%a*k(-u9sg7k^svsd7wdsvk8c57_qrd9xnkr-d'
 DEBUG = True
-ALLOWED_HOSTS = ['https://react-shop-0h3k.onrender.com/']
+ALLOWED_HOSTS = [
+    'https://react-shop-0h3k.onrender.com',
+    'react-shop-0h3k.onrender.com',
+    '127.0.0.1',
+    'localhost']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
